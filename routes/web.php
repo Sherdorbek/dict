@@ -5,7 +5,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\wordHistory;
 
-use function PHPUnit\Framework\isEmpty;
 
 Route::get('/', function () {
     return view('index', ['words' => wordHistory::all()->reverse()]);
@@ -24,8 +23,7 @@ Route::post('/search', function (Request $request) {
     $word = $request['word'];
     $response = Http::get("https://api.dictionaryapi.dev/api/v2/entries/en/" . $word);
     $data = $response->json();
-
-    if (isEmpty($data)) {
+    if (array_key_first($data)  === 'title') {
         return redirect('/')->with('success', 'word not found');
     }
 
